@@ -1,4 +1,4 @@
-# IPyNCL: A IPython kernel for NCAR Command Language
+# IPyNCL: An IPython Notebook for NCAR Command Language
 
 ##Installation:
 
