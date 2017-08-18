@@ -63,7 +63,7 @@ class REPLWrapper(object):
         self.child.sendline(prompt_change)
 
     def _expect_prompt(self, timeout=-1):
-        print self.prompt
+        print( self.prompt )
         return self.child.expect(self.prompt) #had to be simplified
 
     def run_command(self, command, timeout=-1):
