@@ -65,7 +65,6 @@ class NCLKernel(Kernel):
         #if len(code.splitlines()) > 1:
         #    av=[line for line in code.splitlines() if not line.strip().startswith("print(")]
         #   code='\n'.join(av)
-
         try:
             if code.startswith(';!'):
                 #that is these commands are run from ncl
@@ -108,16 +107,18 @@ class NCLKernel(Kernel):
                 #self._child.setecho(False)
                 #self._child.waitnoecho(True)
                 self.pattern=["ncl"] #,"ncl \d >","\r\n","lines",pexpect.EOF,pexpect.TIMEOUT]
+                output = []
                 for line in code.strip().splitlines():
-                    self._child.sendline(line)
-                    #self._child.expect(["ncl",pexpect.EOF,pexpect.TIMEOUT])
-                    i=self._child.expect(self.pattern)
-                output=self._child.before
-                self.code=code
-                self.output=output
-                self.outmatch=self.pattern[i]
-                output = b'\n'.join([line for line in output.splitlines()[1::] if line.strip()]).decode()
-
+                    if not line.startswith(';'):
+                        self._child.sendline(line)
+                        i=self._child.expect(self.pattern)
+                        retlines = self._child.before.decode().splitlines()
+                        for retline in retlines[1:]:
+                            if ( retline.strip() ):
+                                output.append( retline ) 
+                output = [ line.encode() for line in output]
+                output = b'\n'.join(output).decode()+'\n'
+                
 #2 ways of doing it: 
 #---1send bunch of lines and then do expect once 
 #---2send expect everytime  
