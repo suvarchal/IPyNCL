@@ -7,8 +7,12 @@ import signal
 import re
 import os
 from distutils.spawn import find_executable
-import cPickle
 import sys
+if sys.version_info[0] == 3:
+    import _pickle as cPickle
+else:
+    import cPickle
+
 __version__ = '0.9.1'
 class NCLKernel(Kernel):
     implementation = 'NCL'
