@@ -36,7 +36,7 @@ class NCLKernel(Kernel):
 
         self.max_hist_cache = 1000
         self.hist_cache = []
-	#self._default_matches=cPickle.load(open('data/inbuilt_list', 'rb'))
+        #self._default_matches=cPickle.load(open('data/inbuilt_list', 'rb'))
         self._default_matches=self.inbuiltlist()
     def get_usage(self):
         return "This is the NCL kernel."
@@ -56,7 +56,7 @@ class NCLKernel(Kernel):
     def do_execute(self, code, silent=True, store_history=True, user_expressions=None,
                    allow_stdin=False):
         code   =  code.strip()
-	abort_msg = {'status': 'abort',
+        abort_msg = {'status': 'abort',
                      'execution_count': self.execution_count}
         interrupt = False
         av=[]
@@ -69,26 +69,26 @@ class NCLKernel(Kernel):
         try:
             if code.startswith(';!'):
                 #that is these commands are run from ncl
-	        cmd    = "system(\""+code.replace(";!","").strip()+"\")"
+                cmd    = "system(\""+code.replace(";!","").strip()+"\")"
                 output = self.nclwrapper.run_command(cmd,timeout=None)
                 output = '\n'.join(output.splitlines()[1::])+'\n'
             elif code.startswith('%debug'):
-       	    	#self.nclwrapper.child.send(code+"\n\Q")
+                #self.nclwrapper.child.send(code+"\n\Q")
                 #self.nclwrapper.child.expect(u'ncl \d> ')
                 #output=self.nclwrapper.child.before
-	    	#indstr=output.find('\n')
+                #indstr=output.find('\n')
                 #indend=output.rfind('\n')
                 #output=output[indstr+1:indend]
-	    	#output = '\n'.join([line for line in output.splitlines()[1::] if line.strip()])+'\n'
+                #output = '\n'.join([line for line in output.splitlines()[1::] if line.strip()])+'\n'
                 #output='\n'.join(output.splitlines()[1::])+'\n'
                 output="Before: \n"+str(self._child.before)+"\n After: \n"+str(self._child.after)
- 	    elif code.startswith(';%timeit'):
-	        code=code.replace(";%timeit","").strip()
+            elif code.startswith(';%timeit'):
+                code=code.replace(";%timeit","").strip()
                 tstart=time.time()
-		output = self.nclwrapper.run_command(code.strip(), timeout=None)
-		output = "\nTime: %s seconds.\n" % (time.time() - tstart)
-	    else:
-  	        #output = self.nclwrapper.run_command(code.strip(), timeout=None)
+                output = self.nclwrapper.run_command(code.strip(), timeout=None)
+                output = "\nTime: %s seconds.\n" % (time.time() - tstart)
+            else:
+                #output = self.nclwrapper.run_command(code.strip(), timeout=None)
                 #indstr=output.find('\n')
                 #indend=output.rfind('\n')
                 #output=output[indstr+1:indend] 
@@ -131,14 +131,14 @@ class NCLKernel(Kernel):
                  if self._child.isalive():
                      return {'status': 'ok','execution_count': [],'payload': [],'user_expressions': {}}
 
-	except EOF:
+        except EOF:
             #when would this happen
             output = self._child.before +'\n Reached EOF Restarting NCL'
             if not self._child.isalive():
                  output+='\n killing ncl session and restarting'
                  interrupt = True
                  self._start_ncl()
- 	if not silent:
+        if not silent:
             #is is being used when kernel is being made from jupyter notebook
             stream_content = {'name': 'stdout', 'text': output}
             self.send_response(self.iopub_socket, 'stream', stream_content)
@@ -146,7 +146,7 @@ class NCLKernel(Kernel):
             #stream_content = {'name': 'stdout', 'text': "what the fck"}
             #self.send_response(self.iopub_socket, 'stream', stream_content)
             
-	    #stream_content = {'data':{'text':l}} #or forl in output.splitlines??
+            #stream_content = {'data':{'text':l}} #or forl in output.splitlines??
             #self.send_response(self.iopub_socket,'display_data',stream_content)
         if interrupt:
             return {'status': 'abort', 'execution_count': self.execution_count}
@@ -161,14 +161,14 @@ class NCLKernel(Kernel):
         if not code or code[-1] == ' ':
             return default
         
- 	tokens = code.split()
+        tokens = code.split()
         if not tokens:
             return default
 
         matches = []
         token = tokens[-1]
         start = cursor_pos - len(token)
-	lib_search_path="$NCARG_ROOT/lib/ncarg/nclscripts/csm/* $NCARG_ROOT/lib/ncarg/nclscripts/*"
+        lib_search_path="$NCARG_ROOT/lib/ncarg/nclscripts/csm/* $NCARG_ROOT/lib/ncarg/nclscripts/*"
         cmd="system(\"grep -i 'function\|procedure' "+lib_search_path+"|cut -d':' -f2|grep -v '^;'|cut -d' ' -f2|cut -d'(' -f1|grep -v -e '^$'\")"
         #output=self.nclwrapper.run_command(cmd,timeout=None) 
         #matches.extend([e for e in list(set(output.split()[1:])) if not e.startswith(";")])
