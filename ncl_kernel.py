@@ -115,9 +115,9 @@ class NCLKernel(Kernel):
                 output=self._child.before
                 self.code=code
                 self.output=output
-                self.outmatch=self.pattern[i]    
-                output = '\n'.join([line for line in output.splitlines()[1::] if line.strip()])+'\n'
-                  
+                self.outmatch=self.pattern[i]
+                output = b'\n'.join([line for line in output.splitlines()[1::] if line.strip()]).decode()
+
 #2 ways of doing it: 
 #---1send bunch of lines and then do expect once 
 #---2send expect everytime  
