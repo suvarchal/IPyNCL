@@ -1,8 +1,8 @@
 # IPyNCL: An IPython Notebook for NCAR Command Language
 
-##Installation:
+## Installation:
 
-###I Have Jupyter and NCL already:
+### I Have Jupyter and NCL already:
 
 Get the Jupyter package either by downloading zip file from this git or clone this git repository.
 
@@ -15,7 +15,7 @@ Start scripting like in NCL.
 
 The NCL kernel for Jupyter will use what ever ncl version is currently sourced.
 
-###I Dont Have Jupter Notebook:
+### I Dont Have Jupter Notebook:
 First get Miniconda, it cleanly maintains different python versions/programs within their 
 own virtual environments, to minimize any conflicts with other packages.
 Moreover it is easy local installation, it sets the paths for you in the end. 
