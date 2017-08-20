@@ -65,7 +65,6 @@ class NCLKernel(Kernel):
         #if len(code.splitlines()) > 1:
         #    av=[line for line in code.splitlines() if not line.strip().startswith("print(")]
         #   code='\n'.join(av)
-
         try:
             if code.startswith(';!'):
                 #that is these commands are run from ncl
@@ -117,7 +116,6 @@ class NCLKernel(Kernel):
                 #self.output=output
                 #self.outmatch=self.pattern[i]
                 #output = b'\n'.join([line for line in output.splitlines()[1::] if line.strip()]).decode()
-
 #2 ways of doing it: 
 #---1send bunch of lines and then do expect once 
 #---2send expect everytime  
