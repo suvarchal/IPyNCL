@@ -8,6 +8,8 @@ import re
 import os
 from distutils.spawn import find_executable
 import sys
+import time
+
 if sys.version_info[0] == 3:
     import _pickle as cPickle
 else:
@@ -71,7 +73,7 @@ class NCLKernel(Kernel):
                 cmd    = "system(\""+code.replace(";!","").strip()+"\")"
                 output = self.nclwrapper.run_command(cmd,timeout=None)
                 output = '\n'.join(output.splitlines()[1::])+'\n'
-            elif code.startswith('%debug'):
+            elif code.startswith(';%debug'):
                 #self.nclwrapper.child.send(code+"\n\Q")
                 #self.nclwrapper.child.expect(u'ncl \d> ')
                 #output=self.nclwrapper.child.before
@@ -80,42 +82,18 @@ class NCLKernel(Kernel):
                 #output=output[indstr+1:indend]
                 #output = '\n'.join([line for line in output.splitlines()[1::] if line.strip()])+'\n'
                 #output='\n'.join(output.splitlines()[1::])+'\n'
-                output="Before: \n"+str(self._child.before)+"\n After: \n"+str(self._child.after)
+                output=["Before:",
+                        str(self._child.before),
+                        " After: ",
+                        str(self._child.after)]
+                self.process_output(output)
             elif code.startswith(';%timeit'):
                 code=code.replace(";%timeit","").strip()
                 tstart=time.time()
-                output = self.nclwrapper.run_command(code.strip(), timeout=None)
-                output = "\nTime: %s seconds.\n" % (time.time() - tstart)
+                self.nclwrapper.run_command(code.strip(), timeout=None)
+                self.process_output(["\nTime: %s seconds.\n" % (time.time() - tstart)])
             else:
                 self.nclwrapper.run_command(code.strip(), timeout=None)
-                #indstr=output.find('\n')
-                #indend=output.rfind('\n')
-                #output=output[indstr+1:indend] 
-                #output = '\n'.join([line for line in output.splitlines()[1::] if line.strip()])+'\n'
-                
-                #using repl child
-                #self.nclwrapper.child.setecho(False)
-                #self.nclwrapper.child.waitnoecho(False)
-                #for line in code.strip().splitlines():
-                #    self.nclwrapper.child.sendline(line)
-                #    self.nclwrapper.child.expect(["ncl",pexpect.EOF])
-                #output=self.nclwrapper.child.before 
-                #output = '\n'.join([line for line in output.splitlines()[1::] if line.strip()])+'\n'
-                #self.nclwrapper.child.setecho(True)
-                #self.nclwrapper.child.waitnoecho(True)
-                #using pexpect child
-                #self._child.setecho(False)
-                #self._child.waitnoecho(True)
-                #self.pattern=["ncl"] #,"ncl \d >","\r\n","lines",pexpect.EOF,pexpect.TIMEOUT]
-                #for line in code.strip().splitlines():
-                #    self._child.sendline(line)
-                #    #self._child.expect(["ncl",pexpect.EOF,pexpect.TIMEOUT])
-                #    i=self._child.expect(self.pattern)
-                #output=self._child.before
-                #self.code=code
-                #self.output=output
-                #self.outmatch=self.pattern[i]
-                #output = b'\n'.join([line for line in output.splitlines()[1::] if line.strip()]).decode()
 #2 ways of doing it: 
 #---1send bunch of lines and then do expect once 
 #---2send expect everytime  
