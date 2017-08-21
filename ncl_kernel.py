@@ -26,7 +26,6 @@ class NCLKernel(Kernel):
 
     def __init__(self, **kwargs):
         Kernel.__init__(self, **kwargs)
-        os.environ['PAGER']="more"
         self._start_ncl()
         
         self.pexpect_version=pexpect.__version__    
@@ -47,7 +46,7 @@ class NCLKernel(Kernel):
         try:
             self._executable = find_executable("ncl")
             #self._executable = self._executable+" -p"
-            self._child  = spawn(self._executable,timeout = 300) #env={'TERM':'xterm','PAGER':'more'})
+            self._child  = spawn(self._executable,timeout = 300, env={'TERM':'xterm','PAGER':'cat'})
             self._child.log=sys.stdout
             self.nclwrapper = replw(self._child,"ncl [0-9]+",None,line_output_callback=self.process_output)
             self._child.setwinsize(400,500)
