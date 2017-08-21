@@ -90,8 +90,11 @@ class REPLWrapper(object):
         self.child.sendline(cmdlines[0])
         for line in cmdlines[1:]:
             self._expect_prompt(timeout=timeout)
-            output = self.child.before.decode().splitlines()
-            self.line_output_callback(output, code='')
+            output = self.child.before
+            output = output.replace(b'\x1b[?1h\x1b=',b'')
+            output = output.replace(b'\x1b[K\x1b[?1l\x1b>',b'')
+            output = output.decode().splitlines()
+            self.line_output_callback(output)
             self.child.sendline(line)
 
         # Command was fully submitted, now wait for the next prompt
@@ -101,5 +104,8 @@ class REPLWrapper(object):
             self._expect_prompt(timeout=1)
             raise ValueError("Continuation prompt found - input was incomplete:\n"
                              + command)
-        output = self.child.before.decode().splitlines()
-        self.line_output_callback(output, code='')
+        output = self.child.before
+        output = output.replace(b'\x1b[?1h\x1b=',b'')
+        output = output.replace(b'\x1b[K\x1b[?1l\x1b>',b'')
+        output = output.decode().splitlines()
+        self.line_output_callback(output)
