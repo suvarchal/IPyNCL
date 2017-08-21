@@ -24,11 +24,11 @@ You can get the version for your operating system here http://conda.pydata.org/m
 
 Install jupyter and ncl by  
 
-```conda create -n ncl_notebook  -c conda-forge ncl=6.4.0 jupyter```  
+```conda create -n ncl_notebook  -c conda-forge ncl=6.4.0 python=3.6 jupyter```  
 
 if you're on mac try the below instead
 
-```conda create -n ncl_notebook  -c conda-forge -c ncar ncl=6.4.0 gsl jupyter```
+```conda create -n ncl_notebook  -c conda-forge -c ncar ncl=6.4.0 gsl python=3.6 jupyter```
 
 Activate this environment with ```source activate ncl_notebook``` and launch the jupyter server with 
 ``` jupyter notebook```
