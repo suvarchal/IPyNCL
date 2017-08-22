@@ -34,7 +34,9 @@ class REPLWrapper(object):
     def __init__(self, cmd_or_spawn, orig_prompt, prompt_change,
                  new_prompt=PEXPECT_PROMPT,
                  continuation_prompt=PEXPECT_CONTINUATION_PROMPT,
-                 extra_init_cmd=None):
+                 extra_init_cmd=None,line_output_callback=None):
+        self.line_output_callback = line_output_callback
+        
         if isinstance(cmd_or_spawn, basestring):
             self.child = pexpect.spawn(cmd_or_spawn, echo=False) #encoding = utf was not working
         else:
@@ -63,7 +65,7 @@ class REPLWrapper(object):
         self.child.sendline(prompt_change)
 
     def _expect_prompt(self, timeout=-1):
-        print self.prompt
+        print( self.prompt )
         return self.child.expect(self.prompt) #had to be simplified
 
     def run_command(self, command, timeout=-1):
@@ -88,7 +90,8 @@ class REPLWrapper(object):
         self.child.sendline(cmdlines[0])
         for line in cmdlines[1:]:
             self._expect_prompt(timeout=timeout)
-            res.append(self.child.before)
+            output = self.child.before.decode().splitlines()
+            self.line_output_callback(output)
             self.child.sendline(line)
 
         # Command was fully submitted, now wait for the next prompt
@@ -98,4 +101,5 @@ class REPLWrapper(object):
             self._expect_prompt(timeout=1)
             raise ValueError("Continuation prompt found - input was incomplete:\n"
                              + command)
-        return u''.join(res + [self.child.before])
+        output = self.child.before.decode().splitlines()
+        self.line_output_callback(output)
