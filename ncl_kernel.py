@@ -1,5 +1,5 @@
 from ipykernel.kernelbase import Kernel
-from IPython.paths import locate_profile
+from IPython.pathss import locate_profile
 from pexpect import EOF,spawn
 import pexpect
 from nclreplwrap import REPLWrapper as replw
